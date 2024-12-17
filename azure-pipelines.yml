@@ -9,21 +9,23 @@ variables:
   DOCKER_REGISTRY: 'docker.io'
   DOCKER_REPOSITORY: 'flavioao/unyleya_projeto_cicd_flaviooliveira'
   DOCKER_IMAGE_TAG: 'latest'
+  DOCKER_USERNAME: 'flavioao'
+  DOCKER_PASSWORD: 'Jamile@2024'
 
 steps:
 - script: |
     echo "DOCKER_USERNAME: $(DOCKER_USERNAME)"
     echo "DOCKER_PASSWORD length: ${#DOCKER_PASSWORD}"
-  env:
-    DOCKER_USERNAME: $(DOCKER_USERNAME)
-    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+  #env:
+   # DOCKER_USERNAME: $(DOCKER_USERNAME)
+#    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
   displayName: 'Debug Variáveis'
 # Login no Docker Hub
 - script: |
     echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
-  env:
-    DOCKER_USERNAME: $(DOCKER_USERNAME)
-    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+ # env:
+  #  DOCKER_USERNAME: $(DOCKER_USERNAME)
+   # DOCKER_PASSWORD: $(DOCKER_PASSWORD)
   displayName: 'Login no Docker Hub'
 
 # Build da imagem Docker
