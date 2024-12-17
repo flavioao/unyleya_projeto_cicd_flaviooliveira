@@ -22,7 +22,7 @@ steps:
   displayName: 'Debug Variáveis'
 # Login no Docker Hub
 - script: |
-    echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
+    echo 'Jamile@2024' | docker login -u $(DOCKER_USERNAME) --password-stdin
  # env:
   #  DOCKER_USERNAME: $(DOCKER_USERNAME)
    # DOCKER_PASSWORD: $(DOCKER_PASSWORD)
