@@ -6,7 +6,7 @@ pool:
 
 variables:
   DOCKER_REGISTRY: 'docker.io'
-  DOCKER_REPOSITORY: 'seuusuario/unyleya_projeto_cicd_seunome'
+  DOCKER_REPOSITORY: 'flavioao/unyleya_projeto_cicd_flaviooliveira'
   DOCKER_IMAGE_TAG: 'latest'
 
 steps:
