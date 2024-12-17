@@ -8,12 +8,25 @@ variables:
 - group: 'DockerCredentials'  # Grupo com as variáveis DOCKER_USERNAME e DOCKER_PASSWORD
 
 steps:
+- powershell: |
+    Write-Host "DOCKER_USERNAME: $(DOCKER_USERNAME)"
+    Write-Host "DOCKER_PASSWORD length: $($(DOCKER_PASSWORD).Length)"
+  displayName: 'Debug das Variáveis'
+
 # Login no Docker Hub usando PowerShell
 - powershell: |
     $dockerUser = "$(DOCKER_USERNAME)"
     $dockerToken = "$(DOCKER_PASSWORD)"
-    $dockerToken | docker login -u $dockerUser --password-stdin
+
+    if ($dockerUser -and $dockerToken) {
+        $dockerToken | docker login -u $dockerUser --password-stdin
+    } else {
+        Write-Error "Variáveis DOCKER_USERNAME ou DOCKER_PASSWORD não estão definidas."
+    }
   displayName: 'Login no Docker Hub usando PowerShell'
+  env:
+    DOCKER_USERNAME: $(DOCKER_USERNAME)
+    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
 
 # Build da Imagem Docker
 - script: |
