@@ -27,19 +27,8 @@ steps:
 - powershell: |
     $dockerUser = "$(DOCKER_USERNAME)"
     $dockerToken = "$(DOCKER_PASSWORD)"
-
-    if (-not [string]::IsNullOrEmpty($dockerUser) -and -not [string]::IsNullOrEmpty($dockerToken)) {
-        $dockerToken | docker login -u $dockerUser --password-stdin
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "Docker login bem-sucedido!"
-        } else {
-            Write-Error "Falha no Docker login."
-            exit 1
-        }
-    } else {
-        Write-Error "Variáveis DOCKER_USERNAME ou DOCKER_PASSWORD estão vazias."
-        exit 1
-    }
+    docker login -u "$(DOCKER_USERNAME)" -p "$(DOCKER_PASSWORD)"
+    
   displayName: 'Login no Docker Hub usando PowerShell'
   env:
     DOCKER_USERNAME: $(DOCKER_USERNAME)
