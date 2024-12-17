@@ -2,43 +2,59 @@ trigger:
 - main
 
 pool:
-  name: 'SelfHostedPool'  # Nome do seu Self-hosted Agent Pool
+  name: 'SelfHostedPool'  # Substitua pelo nome do seu Self-hosted Agent Pool
 
 variables:
-- group: 'DockerCredentials'  # Grupo com as variáveis DOCKER_USERNAME e DOCKER_PASSWORD
+- group: 'DockerCredentials'  # Nome do grupo de variáveis com DOCKER_USERNAME e DOCKER_PASSWORD
 
 steps:
+
+# Etapa 1: Debug das Variáveis
 - powershell: |
     Write-Host "DOCKER_USERNAME: $(DOCKER_USERNAME)"
-    Write-Host "DOCKER_PASSWORD length: $($(DOCKER_PASSWORD).Length)"
+    if ("$(DOCKER_PASSWORD)" -ne "") {
+        Write-Host "DOCKER_PASSWORD length: $($(DOCKER_PASSWORD).Length)"
+    } else {
+        Write-Host "DOCKER_PASSWORD está vazio ou não foi resolvido."
+    }
   displayName: 'Debug das Variáveis'
+  env:
+    DOCKER_USERNAME: $(DOCKER_USERNAME)
+    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
 
-# Login no Docker Hub usando PowerShell
+# Etapa 2: Login no Docker Hub usando PowerShell
 - powershell: |
     $dockerUser = "$(DOCKER_USERNAME)"
     $dockerToken = "$(DOCKER_PASSWORD)"
 
-    if ($dockerUser -and $dockerToken) {
+    if (-not [string]::IsNullOrEmpty($dockerUser) -and -not [string]::IsNullOrEmpty($dockerToken)) {
         $dockerToken | docker login -u $dockerUser --password-stdin
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Docker login bem-sucedido!"
+        } else {
+            Write-Error "Falha no Docker login."
+            exit 1
+        }
     } else {
-        Write-Error "Variáveis DOCKER_USERNAME ou DOCKER_PASSWORD não estão definidas."
+        Write-Error "Variáveis DOCKER_USERNAME ou DOCKER_PASSWORD estão vazias."
+        exit 1
     }
   displayName: 'Login no Docker Hub usando PowerShell'
   env:
     DOCKER_USERNAME: $(DOCKER_USERNAME)
     DOCKER_PASSWORD: $(DOCKER_PASSWORD)
 
-# Build da Imagem Docker
+# Etapa 3: Build da Imagem Docker
 - script: |
     docker build -t $(DOCKER_USERNAME)/unyleya_projeto:latest .
   displayName: 'Build da Imagem Docker'
 
-# Push da Imagem Docker
+# Etapa 4: Push da Imagem Docker para o Docker Hub
 - script: |
     docker push $(DOCKER_USERNAME)/unyleya_projeto:latest
-  displayName: 'Push da Imagem para o Docker Hub'
+  displayName: 'Push da Imagem Docker para o Docker Hub'
 
-# Listar Imagens para Validação
+# Etapa 5: Listar Imagens Docker para Validação
 - script: |
     docker images
-  displayName: 'Listar Imagens Locais'
+  displayName: 'Listar Imagens Docker Locais'
