@@ -20,8 +20,8 @@ steps:
 
 # Login no Docker Hub
 - script: |
-   echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
-   displayName: 'Login no Docker Hub'
+    echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
+  displayName: 'Login no Docker Hub'
 
 # Build da imagem Docker
 - script: |
