@@ -6,24 +6,34 @@ pool:
 
 variables:
   DOCKER_REGISTRY: 'docker.io'
-  DOCKER_REPOSITORY: 'flavioao/unyleya_projeto_cicd_flaviooliveira'
+  DOCKER_REPOSITORY: 'seuusuario/unyleya_projeto_cicd_seunome'
   DOCKER_IMAGE_TAG: 'latest'
 
 steps:
 # Login no Docker Hub
-- script: |
-    echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
+- task: Docker@2
+  inputs:
+    containerRegistry: 'dockerHubServiceConnection'  # Este nome deve ser o mesmo da conexão criada
+    command: 'login'
+    username: $(DOCKER_USERNAME)
+    password: $(DOCKER_PASSWORD)
   displayName: 'Login no Docker Hub'
 
 # Build da imagem Docker
-- script: |
-    docker build -t $(DOCKER_REGISTRY)/$(DOCKER_REPOSITORY):$(DOCKER_IMAGE_TAG) .
-  displayName: 'Build da imagem Docker'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'dockerHubServiceConnection'  # Este nome deve ser o mesmo da conexão criada
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(DOCKER_IMAGE_TAG)
+  displayName: 'Build da imagem Nginx com Alpine'
 
-# Push da imagem Docker
-- script: |
-    docker push $(DOCKER_REGISTRY)/$(DOCKER_REPOSITORY):$(DOCKER_IMAGE_TAG)
-  displayName: 'Push da imagem Docker'
-
- 
-
+# Push da imagem para o Docker Hub
+- task: Docker@2
+  inputs:
+    containerRegistry: 'dockerHubServiceConnection'  # Este nome deve ser o mesmo da conexão criada
+    command: 'push'
+    tags: |
+      $(DOCKER_IMAGE_TAG)
+  displayName: 'Push da imagem para Docker Hub'
