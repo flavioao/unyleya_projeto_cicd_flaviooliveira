@@ -15,18 +15,13 @@ variables:
 steps:
 - script: |
     echo "DOCKER_USERNAME: $(DOCKER_USERNAME)"
-    echo "DOCKER_PASSWORD length: ${DOCKER_PASSWORD}"
-  #env:
-   # DOCKER_USERNAME: $(DOCKER_USERNAME)
-#    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+    echo "DOCKER_PASSWORD: $(DOCKER_PASSWORD)"
   displayName: 'Debug Variáveis'
+
 # Login no Docker Hub
 - script: |
-    echo 'Jamile@2024' | docker login -u $(DOCKER_USERNAME) --password-stdin
- # env:
-  #  DOCKER_USERNAME: $(DOCKER_USERNAME)
-   # DOCKER_PASSWORD: $(DOCKER_PASSWORD)
-  displayName: 'Login no Docker Hub'
+   echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
+   displayName: 'Login no Docker Hub'
 
 # Build da imagem Docker
 - script: |
