@@ -1,45 +1,31 @@
-# Gatilho para a branch principal
 trigger:
 - main
 
-# Configuração do agente
 pool:
-  name: 'SelfHostedPool'  # Nome do seu agente self-hosted
+  name: 'SelfHostedPool'  # Nome do seu Self-hosted Agent Pool
 
-# Referência ao grupo de variáveis seguro
 variables:
-- group: 'DockerCredentials'
+- group: 'DockerCredentials'  # Grupo com as variáveis DOCKER_USERNAME e DOCKER_PASSWORD
 
 steps:
-
-# Debug das Variáveis
-- script: |
-    echo "DOCKER_USERNAME: $(DOCKER_USERNAME)"
-    echo "DOCKER_PASSWORD length: ${#DOCKER_PASSWORD}"
-  displayName: 'Debug das Variáveis'
-  env:
-    DOCKER_USERNAME: $(DOCKER_USERNAME)
-    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
-
-# Login no Docker Hub
-- script: |
-    echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
-  displayName: 'Login no Docker Hub'
-  env:
-    DOCKER_USERNAME: $(DOCKER_USERNAME)
-    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
+# Login no Docker Hub usando PowerShell
+- powershell: |
+    $dockerUser = "$(DOCKER_USERNAME)"
+    $dockerToken = "$(DOCKER_PASSWORD)"
+    $dockerToken | docker login -u $dockerUser --password-stdin
+  displayName: 'Login no Docker Hub usando PowerShell'
 
 # Build da Imagem Docker
 - script: |
     docker build -t $(DOCKER_USERNAME)/unyleya_projeto:latest .
   displayName: 'Build da Imagem Docker'
 
-# Push da Imagem para o Docker Hub
+# Push da Imagem Docker
 - script: |
     docker push $(DOCKER_USERNAME)/unyleya_projeto:latest
   displayName: 'Push da Imagem para o Docker Hub'
 
-# Verificação Final
+# Listar Imagens para Validação
 - script: |
     docker images
-  displayName: 'Listar Imagens Docker Locais'
+  displayName: 'Listar Imagens Locais'
