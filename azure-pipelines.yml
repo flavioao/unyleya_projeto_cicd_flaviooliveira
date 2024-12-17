@@ -14,6 +14,9 @@ steps:
 # Login no Docker Hub
 - script: |
     echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USERNAME) --password-stdin
+  env:
+    DOCKER_USERNAME: $(DOCKER_USERNAME)
+    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
   displayName: 'Login no Docker Hub'
 
 # Build da imagem Docker
