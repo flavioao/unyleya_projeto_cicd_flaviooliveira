@@ -5,15 +5,16 @@ pool:
   name: 'SelfHostedPool'  # Substitua pelo nome do seu Self-hosted Agent Pool
 
 variables:
-- group: 'DockerCredentials'  # Nome do grupo de variáveis com DOCKER_USERNAME e DOCKER_PASSWORD
+- group: 'DockerCredentials'  # Nome do grupo de variáveis no Azure DevOps com DOCKER_USERNAME e DOCKER_PASSWORD
 
 steps:
 
 # Etapa 1: Debug das Variáveis
 - powershell: |
     Write-Host "DOCKER_USERNAME: $(DOCKER_USERNAME)"
-    if ("$(DOCKER_PASSWORD)" -ne "") {
-        Write-Host "DOCKER_PASSWORD length: $($(DOCKER_PASSWORD).Length)"
+    $dockerToken = "$(DOCKER_PASSWORD)"
+    if ($dockerToken) {
+        Write-Host "DOCKER_PASSWORD length: $($dockerToken.Length)"
     } else {
         Write-Host "DOCKER_PASSWORD está vazio ou não foi resolvido."
     }
