@@ -15,7 +15,7 @@ variables:
 steps:
 - script: |
     echo "DOCKER_USERNAME: $(DOCKER_USERNAME)"
-    echo "DOCKER_PASSWORD length: ${#DOCKER_PASSWORD}"
+    echo "DOCKER_PASSWORD length: ${DOCKER_PASSWORD}"
   #env:
    # DOCKER_USERNAME: $(DOCKER_USERNAME)
 #    DOCKER_PASSWORD: $(DOCKER_PASSWORD)
