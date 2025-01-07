@@ -2,10 +2,10 @@ trigger:
 - main
 
 pool:
-  name: 'SelfHostedPool'  # Substitua pelo nome do seu Self-hosted Agent Pool
+  name: 'SelfHostedPool'  
 
 variables:
-- group: 'DockerCredentials'  # Nome do grupo de variáveis no Azure DevOps com DOCKER_USERNAME e DOCKER_PASSWORD
+- group: 'DockerCredentials'  # Usei Self-hosted Agent Pool para executar os jobs na minha máquina
 
 steps:
 
